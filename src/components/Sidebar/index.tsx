@@ -65,6 +65,11 @@ const menuGroups = [
         label: "Pembayaran",
         route: "/pembayaran",
       },
+      {
+        icon: <MdPayment className="text-xl" />,
+        label: "Pengeluaran",
+        route: "/pengeluaran",
+      },
     ],
   },
   // {

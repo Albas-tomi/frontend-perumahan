@@ -1,6 +1,8 @@
+import { fetcher } from "@/lib/swr/fethcer";
 import { ApexOptions } from "apexcharts";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
+import useSWR from "swr";
 
 interface ChartThreeState {
   series: number[];
@@ -49,12 +51,48 @@ const options: ApexOptions = {
   ],
 };
 
-const ChartThree: React.FC = ({ dataPembayaran }: any) => {
+const ChartThree: React.FC = () => {
+  const [dataPembayaran, setDataPembayaran] = useState([]);
+  const [dataPengeluaran, setDataPengeluaran] = useState([]);
+
+  // GET DATA PEMBAYARAN
+  const { data: pembayaran } = useSWR(
+    `${process.env.NEXT_PUBLIC_API_URL}/pembayaran`,
+    fetcher,
+  );
+  // SET DATA PEMBAYARAN
+  useEffect(() => {
+    if (pembayaran) {
+      setDataPembayaran(pembayaran);
+    }
+  }, [pembayaran]);
+
+  // GET DATA PEMBAYARAN
+  const { data: pengeluaran } = useSWR(
+    `${process.env.NEXT_PUBLIC_API_URL}/pengeluaran`,
+    fetcher,
+  );
+  // SET DATA PEMBAYARAN
+  useEffect(() => {
+    if (pengeluaran) {
+      setDataPengeluaran(pengeluaran);
+    }
+  }, [pengeluaran]);
+
+  //  TOTAL KEUANGAN PEMASUKAN
   const jumlahKeuangan = dataPembayaran?.reduce((total: number, item: any) => {
     return total + item.jumlah_pembayaran;
   }, 0);
 
-  const series = [100000, jumlahKeuangan];
+  //  TOTAL KEUANGAN PEMASUKAN
+  const jumlahPengeluaran = dataPengeluaran?.reduce(
+    (total: number, item: any) => {
+      return total + item.jumlah_pengeluaran;
+    },
+    0,
+  );
+
+  const series = [jumlahPengeluaran, jumlahKeuangan];
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-5">
       <div className="mb-3 justify-between gap-4 sm:flex">

@@ -46,6 +46,7 @@ const ModalEditRumah = ({
       console.log(error.response.data.message);
     }
   };
+
   return (
     <Modal width="w-[60%]" height="h-[90%]">
       <div>

@@ -15,51 +15,38 @@ const ChartThree = dynamic(() => import("@/components/Charts/ChartThree"), {
 const HomePage = () => {
   const [dataRumah, setDataRumah] = useState([]);
   const [dataPenghuni, setDataPenghuni] = useState([]);
-  const [dataPembayaran, setDataPembayaran] = useState<any>([]);
 
-  // get data from api
+  // GET DATA RUMAH
   const { data: rumah } = useSWR(
     `${process.env.NEXT_PUBLIC_API_URL}/rumah`,
     fetcher,
   );
 
-  // set data
+  // SET DATA RUMAH
   useEffect(() => {
     if (rumah) {
       setDataRumah(rumah);
     }
   }, [rumah]);
 
-  // get data
+  // GET DATA PENGHUNI
   const { data: penghuni } = useSWR(
     `${process.env.NEXT_PUBLIC_API_URL}/penghuni`,
     fetcher,
   );
-  // set data
+  // SET DATA PENGHUNI
   useEffect(() => {
     if (penghuni) {
       setDataPenghuni(penghuni);
     }
   }, [penghuni]);
 
-  // get data
-  const { data: pembayaran } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/pembayaran`,
-    fetcher,
-  );
-  // set data
-  useEffect(() => {
-    if (pembayaran) {
-      setDataPembayaran(pembayaran);
-    }
-  }, [pembayaran]);
-
-  // get data
+  // GET DATA STATUS KONTRAK
   const penghuniKontrak = dataPenghuni?.filter(
     (penghuni: any) => penghuni?.status_penghuni === "kontrak",
   );
 
-  // get data
+  // GET DATA STATUS TETAP
   const penghuniTetap = dataPenghuni?.filter(
     (penghuni: any) => penghuni?.status_penghuni === "tetap",
   );
@@ -91,7 +78,7 @@ const HomePage = () => {
           </CardDataStats>
         </div>
         <div className="my-4 w-full">
-          <Chart dataPembayaran={dataPembayaran} />
+          <Chart />
         </div>
       </div>
     </DefaultLayout>
