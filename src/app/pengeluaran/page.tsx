@@ -18,6 +18,8 @@ const Pembayaran = () => {
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [dataPengeluaran, setDataPengeluaran] = useState([]);
   const [dataUpdate, setDataUpdate] = useState([]);
+  const [keyword, setKeyword] = useState("");
+  const [dataDisplay, setDataDisplay] = useState([]);
 
   //  PENGELUARAN
   const { data: pengeluaran } = useSWR(
@@ -41,12 +43,37 @@ const Pembayaran = () => {
       toast.error(error.response.data.message);
     }
   };
+
+  // HANDLE FILTER DATA
+  const handleSearchPenghuni = () => {
+    let result = dataPengeluaran;
+    if (keyword !== "") {
+      result = dataPengeluaran.filter((item: any) =>
+        item.deskripsi.toLowerCase().includes(keyword),
+      );
+    }
+    setDataDisplay(result);
+  };
+  useEffect(() => {
+    handleSearchPenghuni();
+  }, [dataPengeluaran, keyword]);
+
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
         <div className="mx-auto max-w-242.5">
           <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-            <div className="flex w-full justify-end ">
+            <div className="flex w-full justify-between ">
+              <div className="mb-4.5 flex flex-col gap-6 ">
+                <div className="w-full">
+                  <input
+                    onChange={(e) => setKeyword(e.target.value)}
+                    type="search"
+                    placeholder="Cari pengeluaran"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-sm text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+              </div>
               <button
                 onClick={() => setShowModalTambah(!showModalTambah)}
                 className="my-2 inline-flex  items-center justify-center gap-2.5 bg-primary px-4 py-4 text-center font-medium text-white hover:bg-opacity-90 lg:px-4 xl:px-5"
@@ -76,51 +103,64 @@ const Pembayaran = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {dataPengeluaran.map((pengeluaran: any, key: number) => (
-                    <tr key={key}>
-                      <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
-                        <h5 className="font-medium text-black dark:text-white">
-                          {pengeluaran.deskripsi}
+                  {dataDisplay.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="border-b border-[#eee] px-4 py-5 dark:border-strokedark"
+                      >
+                        <h5 className="text-center font-medium text-black dark:text-white">
+                          Tidak ada data
                         </h5>
-                      </td>
-
-                      <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                        <h5 className="font-medium text-black dark:text-white">
-                          {formatCurrencyIDR(pengeluaran.jumlah_pengeluaran)}
-                        </h5>
-                      </td>
-
-                      <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
-                        <h5 className="font-medium text-black dark:text-white">
-                          {format(
-                            parseISO(pengeluaran?.tanggal_pengeluaran),
-                            "yyyy-MM-dd",
-                          )}
-                        </h5>
-                      </td>
-                      <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                        <div className="flex items-center space-x-3.5">
-                          <button
-                            onClick={() => setShowModalEdit(!showModalEdit)}
-                            className="hover:text-primary"
-                          >
-                            <CiEdit
-                              onClick={() => setDataUpdate(pengeluaran)}
-                              className="text-2xl"
-                            />
-                          </button>
-                          <button
-                            onClick={() =>
-                              handleDeletePengeluaran(pengeluaran?.id)
-                            }
-                            className="hover:text-primary"
-                          >
-                            <MdDeleteOutline className="text-2xl" />
-                          </button>
-                        </div>
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    dataDisplay.map((pengeluaran: any, key: number) => (
+                      <tr key={key}>
+                        <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                          <h5 className="font-medium text-black dark:text-white">
+                            {pengeluaran.deskripsi}
+                          </h5>
+                        </td>
+
+                        <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                          <h5 className="font-medium text-black dark:text-white">
+                            {formatCurrencyIDR(pengeluaran.jumlah_pengeluaran)}
+                          </h5>
+                        </td>
+
+                        <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                          <h5 className="font-medium text-black dark:text-white">
+                            {format(
+                              parseISO(pengeluaran?.tanggal_pengeluaran),
+                              "yyyy-MM-dd",
+                            )}
+                          </h5>
+                        </td>
+                        <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                          <div className="flex items-center space-x-3.5">
+                            <button
+                              onClick={() => setShowModalEdit(!showModalEdit)}
+                              className="hover:text-primary"
+                            >
+                              <CiEdit
+                                onClick={() => setDataUpdate(pengeluaran)}
+                                className="text-2xl"
+                              />
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleDeletePengeluaran(pengeluaran?.id)
+                              }
+                              className="hover:text-primary"
+                            >
+                              <MdDeleteOutline className="text-2xl" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

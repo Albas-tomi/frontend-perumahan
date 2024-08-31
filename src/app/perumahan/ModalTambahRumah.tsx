@@ -29,7 +29,7 @@ const ModalTambahRumah = ({
       const res = await rumahServices.addRumah(formRumah);
       if (res.status === 201) {
         setShowModalTambah(false);
-        mutate(`${process.env.NEXT_PUBLIC_API_URL}/penghuni`);
+        mutate(`${process.env.NEXT_PUBLIC_API_URL}/rumah`);
         toast.success("Rumah baru ditambahkan");
       }
     } catch (error: any) {

@@ -22,8 +22,10 @@ const Perumahan = () => {
   const [showModalTambah, setShowModalTambah] = useState(false);
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [dataRumah, setDataRumah] = useState([]);
+  const [dataDisplay, setDataDisplay] = useState([]);
   const [dataPenghuni, setDataPenghuni] = useState([]);
   const [dataUpdate, setDataUpdate] = useState([]);
+  const [keyword, setKeyword] = useState("");
   const { data } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/rumah`, fetcher);
   const { data: penghuni } = useSWR(
     `${process.env.NEXT_PUBLIC_API_URL}/penghuni`,
@@ -59,11 +61,36 @@ const Perumahan = () => {
     }
   };
 
+  // HANDLE FILTER DATA
+  const handleSearchRumah = () => {
+    let result = dataRumah;
+    if (keyword !== "") {
+      result = dataRumah.filter((item: any) =>
+        item.nomor_rumah.toLowerCase().includes(keyword),
+      );
+    }
+    setDataDisplay(result);
+  };
+
+  useEffect(() => {
+    handleSearchRumah();
+  }, [dataRumah, keyword]);
+
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
         <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-          <div className="flex w-full justify-end ">
+          <div className="flex w-full justify-between ">
+            <div className="mb-4.5 flex flex-col gap-6 ">
+              <div className="w-full">
+                <input
+                  onChange={(e) => setKeyword(e.target.value)}
+                  type="search"
+                  placeholder="Cari  Nomor Rumah"
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-sm text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                />
+              </div>
+            </div>
             <button
               onClick={() => setShowModalTambah(!showModalTambah)}
               className="my-2 inline-flex  items-center justify-center gap-2.5 bg-primary px-4 py-4 text-center font-medium text-white hover:bg-opacity-90 lg:px-4 xl:px-5"
@@ -96,60 +123,66 @@ const Perumahan = () => {
                 </tr>
               </thead>
               <tbody>
-                {dataRumah.map((rumah: any, key: number) => (
-                  <tr key={key}>
-                    <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
-                      <h5 className="font-medium text-black dark:text-white">
-                        {rumah.nomor_rumah}
-                      </h5>
-                    </td>
-                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                      <p className="text-black dark:text-white">
-                        {rumah.id_penghuni_sekarang === null
-                          ? "-"
-                          : getDataPenghuni(rumah?.id_penghuni_sekarang)
-                              ?.nama_lengkap}
-                      </p>
-                    </td>
-                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                      <p
-                        className={`inline-flex rounded-full bg-opacity-10 px-3 py-1 text-sm font-medium ${
-                          rumah.status_rumah === "dihuni"
-                            ? "bg-success text-success"
-                            : rumah.status_rumah === "kosong"
-                              ? "bg-danger text-danger"
-                              : "bg-warning text-warning"
-                        }`}
-                      >
-                        {rumah.status_rumah}
-                      </p>
-                    </td>
-                    <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
-                      <h5 className="font-medium text-black dark:text-white">
-                        {rumah.histori_penghuni === "" || [] ? "-" : "kosong"}
-                      </h5>
-                    </td>
-                    <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                      <div className="flex items-center space-x-3.5">
-                        <button
-                          onClick={() => setShowModalEdit(!showModalEdit)}
-                          className="hover:text-primary"
-                        >
-                          <CiEdit
-                            onClick={() => setDataUpdate(rumah)}
-                            className="text-2xl"
-                          />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteRumah(rumah.id)}
-                          className="hover:text-primary"
-                        >
-                          <MdDeleteOutline className="text-2xl" />
-                        </button>
-                      </div>
-                    </td>
+                {dataDisplay.length <= 0 ? (
+                  <tr className="text-center">
+                    <td colSpan={5}>Tidak ada data</td>
                   </tr>
-                ))}
+                ) : (
+                  dataDisplay.map((rumah: any, key: number) => (
+                    <tr key={key}>
+                      <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                        <h5 className="font-medium text-black dark:text-white">
+                          {rumah.nomor_rumah}
+                        </h5>
+                      </td>
+                      <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                        <p className="text-black dark:text-white">
+                          {rumah.id_penghuni_sekarang === null
+                            ? "-"
+                            : getDataPenghuni(rumah?.id_penghuni_sekarang)
+                                ?.nama_lengkap}
+                        </p>
+                      </td>
+                      <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                        <p
+                          className={`inline-flex rounded-full bg-opacity-10 px-3 py-1 text-sm font-medium ${
+                            rumah.status_rumah === "dihuni"
+                              ? "bg-success text-success"
+                              : rumah.status_rumah === "kosong"
+                                ? "bg-danger text-danger"
+                                : "bg-warning text-warning"
+                          }`}
+                        >
+                          {rumah.status_rumah}
+                        </p>
+                      </td>
+                      <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                        <h5 className="font-medium text-black dark:text-white">
+                          {rumah.histori_penghuni === "" || [] ? "-" : "kosong"}
+                        </h5>
+                      </td>
+                      <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                        <div className="flex items-center space-x-3.5">
+                          <button
+                            onClick={() => setShowModalEdit(!showModalEdit)}
+                            className="hover:text-primary"
+                          >
+                            <CiEdit
+                              onClick={() => setDataUpdate(rumah)}
+                              className="text-2xl"
+                            />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteRumah(rumah.id)}
+                            className="hover:text-primary"
+                          >
+                            <MdDeleteOutline className="text-2xl" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

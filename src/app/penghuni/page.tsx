@@ -16,6 +16,8 @@ const Penghuni = () => {
   const [showModalEdit, setShowModalEdit] = useState(false);
   const [dataPenghuni, setDataPenghuni] = useState([]);
   const [dataUpdate, setDataUpdate] = useState([]);
+  const [keyword, setKeyword] = useState("");
+  const [dataDisplay, setDataDisplay] = useState([]);
   const { data: penghuni } = useSWR(
     `${process.env.NEXT_PUBLIC_API_URL}/penghuni`,
     fetcher,
@@ -39,13 +41,36 @@ const Penghuni = () => {
       console.log(error.response.data.message);
     }
   };
+  // HANDLE FILTER DATA
+  const handleSearchPenghuni = () => {
+    let result = dataPenghuni;
+    if (keyword !== "") {
+      result = dataPenghuni.filter((item: any) =>
+        item.nama_lengkap.toLowerCase().includes(keyword),
+      );
+    }
+    setDataDisplay(result);
+  };
+  useEffect(() => {
+    handleSearchPenghuni();
+  }, [dataPenghuni, keyword]);
 
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
         <div className="mx-auto max-w-242.5">
           <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-            <div className="flex w-full justify-end ">
+            <div className="flex w-full justify-between ">
+              <div className="mb-4.5 flex flex-col gap-6 ">
+                <div className="w-full">
+                  <input
+                    onChange={(e) => setKeyword(e.target.value)}
+                    type="search"
+                    placeholder="Cari nama penghuni"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-sm text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+              </div>
               <button
                 onClick={() => setShowModalTambah(!showModalTambah)}
                 className="my-2 inline-flex  items-center justify-center gap-2.5 bg-primary px-4 py-4 text-center font-medium text-white hover:bg-opacity-90 lg:px-4 xl:px-5"
@@ -81,55 +106,63 @@ const Penghuni = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {dataPenghuni?.map((penghuni: any, key: number) => (
-                    <tr key={key}>
-                      <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
-                        <h5 className="font-medium text-black dark:text-white">
-                          {penghuni.nama_lengkap}
-                        </h5>
-                      </td>
-                      <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
-                        <h5 className="text-start font-medium text-black dark:text-white">
-                          {penghuni.foto_ktp}
-                        </h5>
-                      </td>
-                      <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                        <p className="text-start text-black dark:text-white">
-                          {penghuni.status_penghuni}
-                        </p>
-                      </td>
-                      <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
-                        <h5 className="text-start font-medium text-black dark:text-white">
-                          {penghuni.nomor_telepon}
-                        </h5>
-                      </td>
-                      <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                        <h5 className="text-start font-medium text-black dark:text-white">
-                          {penghuni.status_menikah}
-                        </h5>
-                      </td>
-
-                      <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                        <div className="flex items-center space-x-3.5">
-                          <button
-                            onClick={() => {
-                              setShowModalEdit(!showModalEdit),
-                                setDataUpdate(penghuni);
-                            }}
-                            className="hover:text-primary"
-                          >
-                            <CiEdit className="text-2xl" />
-                          </button>
-                          <button
-                            onClick={() => handleDeletePenghuni(penghuni.id)}
-                            className="hover:text-primary"
-                          >
-                            <MdDeleteOutline className="text-2xl" />
-                          </button>
-                        </div>
+                  {dataDisplay.length <= 0 ? (
+                    <tr>
+                      <td colSpan={6} className="text-center">
+                        Tidak ada data
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    dataDisplay?.map((penghuni: any, key: number) => (
+                      <tr key={key}>
+                        <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                          <h5 className="font-medium text-black dark:text-white">
+                            {penghuni.nama_lengkap}
+                          </h5>
+                        </td>
+                        <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                          <h5 className="text-start font-medium text-black dark:text-white">
+                            {penghuni.foto_ktp}
+                          </h5>
+                        </td>
+                        <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                          <p className="text-start text-black dark:text-white">
+                            {penghuni.status_penghuni}
+                          </p>
+                        </td>
+                        <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                          <h5 className="text-start font-medium text-black dark:text-white">
+                            {penghuni.nomor_telepon}
+                          </h5>
+                        </td>
+                        <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                          <h5 className="text-start font-medium text-black dark:text-white">
+                            {penghuni.status_menikah}
+                          </h5>
+                        </td>
+
+                        <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                          <div className="flex items-center space-x-3.5">
+                            <button
+                              onClick={() => {
+                                setShowModalEdit(!showModalEdit),
+                                  setDataUpdate(penghuni);
+                              }}
+                              className="hover:text-primary"
+                            >
+                              <CiEdit className="text-2xl" />
+                            </button>
+                            <button
+                              onClick={() => handleDeletePenghuni(penghuni.id)}
+                              className="hover:text-primary"
+                            >
+                              <MdDeleteOutline className="text-2xl" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
