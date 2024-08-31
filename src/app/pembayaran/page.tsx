@@ -2,7 +2,11 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import React, { useEffect, useState } from "react";
 import { CiEdit } from "react-icons/ci";
-import { MdAddHomeWork, MdDeleteOutline } from "react-icons/md";
+import {
+  MdAddHomeWork,
+  MdArrowDropDown,
+  MdDeleteOutline,
+} from "react-icons/md";
 import ModalTambahPembayaran from "./ModalTambahPembayaran";
 import ModalEditPembayaran from "./ModalEditPembayaran";
 import { fetcher } from "@/lib/swr/fethcer";
@@ -20,6 +24,7 @@ const Pembayaran = () => {
   const [dataPembayaran, setDataPembayaran] = useState([]);
   const [dataUpdate, setDataUpdate] = useState([]);
   const [keyword, setKeyword] = useState("");
+  const [monthKeyword, setMonthKeyword] = useState("");
   const [dataDisplay, setDataDisplay] = useState([]);
 
   //#GET DATA RUMAH
@@ -87,11 +92,16 @@ const Pembayaran = () => {
         item.bulan_bayar.toLowerCase().includes(keyword),
       );
     }
+    if (monthKeyword !== "") {
+      result = dataPembayaran.filter((item: any) =>
+        item.bulan_bayar.toLowerCase().includes(monthKeyword),
+      );
+    }
     setDataDisplay(result);
   };
   useEffect(() => {
     handleSearchPenghuni();
-  }, [dataPembayaran, keyword]);
+  }, [dataPembayaran, keyword, monthKeyword]);
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
@@ -137,8 +147,94 @@ const Pembayaran = () => {
                     <th className="min-w-[120px] px-4 py-4 font-medium text-black dark:text-white">
                       Jumlah
                     </th>
-                    <th className="min-w-[120px] px-4 py-4 font-medium text-black dark:text-white">
-                      Bulan
+
+                    <th className="min-w-[120px]  font-medium text-black dark:text-white">
+                      <select
+                        value={monthKeyword}
+                        name="month"
+                        id="month"
+                        onChange={(e) => setMonthKeyword(e.target.value)}
+                        className={` z-20 w-full   bg-transparent px-5 py-3  dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary`}
+                      >
+                        <option
+                          value=""
+                          className="text-center text-body dark:text-bodydark"
+                        >
+                          Bulan
+                        </option>
+                        <option
+                          value="januari"
+                          className="text-body dark:text-bodydark"
+                        >
+                          Januari
+                        </option>
+                        <option
+                          value="februari"
+                          className="text-body dark:text-bodydark"
+                        >
+                          Februari
+                        </option>
+                        <option
+                          value="maret"
+                          className="text-body dark:text-bodydark"
+                        >
+                          Maret
+                        </option>
+                        <option
+                          value="april"
+                          className="text-body dark:text-bodydark"
+                        >
+                          April
+                        </option>
+                        <option
+                          value="mei"
+                          className="text-body dark:text-bodydark"
+                        >
+                          Mei
+                        </option>
+                        <option
+                          value="juni"
+                          className="text-body dark:text-bodydark"
+                        >
+                          Juni
+                        </option>
+                        <option
+                          value="juli"
+                          className="text-body dark:text-bodydark"
+                        >
+                          Juli
+                        </option>
+                        <option
+                          value="agustus"
+                          className="text-body dark:text-bodydark"
+                        >
+                          Agustus
+                        </option>
+                        <option
+                          value="september"
+                          className="text-body dark:text-bodydark"
+                        >
+                          September
+                        </option>
+                        <option
+                          value="oktober"
+                          className="text-body dark:text-bodydark"
+                        >
+                          Oktober
+                        </option>
+                        <option
+                          value="november"
+                          className="text-body dark:text-bodydark"
+                        >
+                          November
+                        </option>
+                        <option
+                          value="desember"
+                          className="text-body dark:text-bodydark"
+                        >
+                          Desember
+                        </option>
+                      </select>
                     </th>
                     <th className="min-w-[120px] px-4 py-4 font-medium text-black dark:text-white">
                       Tanggal
