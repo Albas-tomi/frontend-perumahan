@@ -12,6 +12,11 @@ export const userServices = {
       withCredentials: true,
     }),
 
+  signInWithGoogle: () =>
+    instance.get("/auth/google", {
+      withCredentials: true,
+    }),
+
   //   getProductById: (id: string) => instance.get(`/api/product/${id}`),
 
   //   addRumah: (data: any) => instance.post("/rumah", data),

@@ -114,7 +114,6 @@ const Header = (props: {
             </div>
           </form>
         </div>
-        <p>{userData.nama_lengkap}</p>
         <div className="flex items-center gap-3 2xsm:gap-7">
           <ul className="flex items-center gap-2 2xsm:gap-4">
             {/* <!-- Dark Mode Toggler --> */}
@@ -123,7 +122,7 @@ const Header = (props: {
           </ul>
 
           {/* <!-- User Area --> */}
-          <DropdownUser />
+          <DropdownUser userData={userData} />
           {/* <!-- User Area --> */}
         </div>
       </div>

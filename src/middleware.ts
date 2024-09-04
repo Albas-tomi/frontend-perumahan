@@ -7,6 +7,7 @@ export const mainMiddleware = (req: NextRequest) => {
 };
 
 export default withAUth(mainMiddleware, [
+  "/",
   "/penghuni",
   "/perumahan",
   "/pembayaran",

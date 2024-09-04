@@ -16,7 +16,6 @@ export const withAUth = (
 
     if (requireAuth.includes(pathname)) {
       const token = req.cookies.get("token");
-      console.log(token);
       if (token === undefined && !isLoginURL.includes(pathname)) {
         const url = new URL(`/auth/signin`, req.url);
         url.searchParams.set("callbackUrl", encodeURI(req.url));

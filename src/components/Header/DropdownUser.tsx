@@ -5,7 +5,7 @@ import ClickOutside from "@/components/ClickOutside";
 import { userServices } from "@/services/users";
 import { useRouter } from "next/navigation";
 
-const DropdownUser = () => {
+const DropdownUser = ({ userData }: any) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
 
@@ -22,7 +22,7 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Muhammad Albas Tomi
+            {userData?.nama_lengkap || "User"}
           </span>
           <span className="block text-xs">Admin</span>
         </span>
@@ -31,11 +31,12 @@ const DropdownUser = () => {
           <Image
             width={112}
             height={112}
-            src={"/images/user/user-01.png"}
+            src={userData?.image || "/images/user.png"}
             style={{
               width: "auto",
               height: "auto",
             }}
+            className="rounded-full"
             alt="User"
           />
         </span>
