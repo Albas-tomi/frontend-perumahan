@@ -25,7 +25,7 @@ export default function RootLayout({
       <title>Perumahan</title>
       <body suppressHydrationWarning={true}>
         <Toaster position="top-right" richColors />
-        <div className="dark:bg-boxdark-2 dark:text-bodydark">
+        <div className="min-h-screen dark:bg-boxdark-2 dark:text-bodydark">
           {loading ? <Loader /> : children}
         </div>
       </body>

@@ -41,7 +41,7 @@ const ModalTambahPembayaran = ({
       toast.error(error?.response?.data.message);
     }
   };
-  console.log(dataRumah);
+
   return (
     <Modal width="w-[60%]" height="h-[90%]">
       <div>

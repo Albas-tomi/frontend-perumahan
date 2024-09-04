@@ -39,7 +39,7 @@ const ModalTambahRumah = ({
   };
 
   return (
-    <Modal width="w-[60%]" height="h-[90%]">
+    <Modal width="w-[95%] md:w-[60%]" height=" h-[95%] md:h-[90%]">
       <div>
         <button
           onClick={() => setShowModalTambah(!showModalTambah)}

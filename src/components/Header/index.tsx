@@ -1,14 +1,27 @@
 import Link from "next/link";
 import DarkModeSwitcher from "./DarkModeSwitcher";
-import DropdownMessage from "./DropdownMessage";
-import DropdownNotification from "./DropdownNotification";
 import DropdownUser from "./DropdownUser";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { userServices } from "@/services/users";
+import useSWR from "swr";
+import { fetcher } from "@/lib/swr/fethcer";
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
+  const [userData, setUserData] = useState({} as any);
+  const { data: user } = useSWR(
+    `${process.env.NEXT_PUBLIC_API_URL}/profile`,
+    fetcher,
+  );
+
+  useEffect(() => {
+    if (user) {
+      setUserData(user);
+    }
+  }, [user]);
   return (
     <header className="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
@@ -101,7 +114,7 @@ const Header = (props: {
             </div>
           </form>
         </div>
-
+        <p>{userData.nama_lengkap}</p>
         <div className="flex items-center gap-3 2xsm:gap-7">
           <ul className="flex items-center gap-2 2xsm:gap-4">
             {/* <!-- Dark Mode Toggler --> */}
